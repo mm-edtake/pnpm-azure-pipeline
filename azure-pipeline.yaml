@@ -43,6 +43,10 @@ stages:
       - script: cp -rL $(function-folder) $(Build.ArtifactStagingDirectory)/api
         displayName: "Bundle"
 
+      # CONTROL BUNDLE DEPS
+      - script: ls -l $(Build.ArtifactStagingDirectory)/api/node_modules
+        displayName: "CONTROL BUNDLE DEPS" # Should contain all deps for api
+
       - task: PublishBuildArtifacts@1
         displayName: "Publish artifact"
         inputs:
