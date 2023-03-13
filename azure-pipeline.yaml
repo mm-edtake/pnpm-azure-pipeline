@@ -1,0 +1,76 @@
+trigger:
+  branches:
+    include:
+    - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  function-folder: "apps/api"
+  webapp-folder: "apps/web"
+
+stages:
+- stage: Build
+  jobs:
+  - job: API
+    steps:
+      - task: NodeTool@0 
+        inputs:
+          versionSpec: '14.x'
+        
+      - script: |
+          npm install -g pnpm
+          rm .npmrc
+          pnpm config set node-linker hoisted
+          pnpm config set recursive-install false
+        displayName: "Setup pnpm" 
+
+      # BUG : To analyze, not only api project dependencies installed in the root node_modules (see nuxt) no matter "recursive-install false"
+      - script: pnpm --filter api install
+        displayName: "Install dependencies"   
+          
+      # API ARTIFACT | copy complete folder recursively (pnpm deploy doesn't work to provide all node_modules dependencies)
+      - script: cp -rL $(function-folder) $(Build.ArtifactStagingDirectory)/api
+        displayName: "Bundle"
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish artifact"
+        inputs:
+          PathtoPublish: $(Build.ArtifactStagingDirectory)/api
+          ArtifactName: 'api'
+          publishLocation: 'Container'
+          StoreAsTar: true
+
+  - job: APP
+    steps:
+      - task: NodeTool@0 
+        inputs:
+          versionSpec: '14.x'
+        
+      # INSTALL PNPM | peers needed for nuxt submodules
+      - script: |
+          npm install -g pnpm
+          rm .npmrc
+          pnpm config set node-linker hoisted
+          pnpm config set recursive-install false
+          pnpm config set auto-install-peers true
+        displayName: "Setup pnpm"
+
+      # BUILD FRONTEND
+      - script: pnpm --filter web install
+        displayName: "Install dependencies"
+
+      # everything else is build app and works fine
+      #
+      #
+      #
+      #
+
+
+- stage: Test
+  jobs:
+  - job: TODO
+    steps:
+      - script: echo "no tests, just sample"
+        displayName: "Tests" 

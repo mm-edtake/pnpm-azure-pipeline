@@ -1,0 +1,12 @@
+{
+    "name": "pnpm-azure-build",
+    "description": "-",
+    "version": "1.0.0",
+    "private": true,
+    "packageManager": "pnpm@7.26.3",
+    "type": "module",
+    "workspaces": [
+      "apps/*",
+      "packages/*"
+      ]
+  }
