@@ -29,6 +29,14 @@ stages:
       # BUG : To analyze, not only api project dependencies installed in the root node_modules (see nuxt) no matter "recursive-install false"
       - script: pnpm --filter api install
         displayName: "Install dependencies"   
+
+      # CONTROL API DEPS
+      - script: ls -l $(function-folder)/node_modules
+        displayName: "CONTROL API DEPS" # Should contain all deps for api or no symlinks
+
+      # CONTROL ROOT node_modules
+      - script: ls -l node_modules
+        displayName: "CONTROL ROOT node_modules" # Should be empty and NOT contain web deps
           
       # API ARTIFACT | copy complete folder recursively (pnpm deploy doesn't work to provide all node_modules dependencies)
       - script: cp -rL $(function-folder) $(Build.ArtifactStagingDirectory)/api
