@@ -23,6 +23,7 @@ stages:
           npm install -g pnpm
           rm .npmrc
           pnpm config set node-linker hoisted
+          pnpm config set hoist false
           pnpm config set recursive-install false
         displayName: "Setup pnpm" 
 
