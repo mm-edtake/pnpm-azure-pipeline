@@ -57,10 +57,10 @@ stages:
       - task: PublishBuildArtifacts@1
         displayName: "Publish artifact"
         inputs:
-          PathtoPublish: $(Build.ArtifactStagingDirectory)/api
+          PathtoPublish: $(Build.ArtifactStagingDirectory)
           ArtifactName: 'api'
           publishLocation: 'Container'
-          StoreAsTar: true
+          StoreAsTar: false
 
   - job: APP
     steps:
