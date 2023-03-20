@@ -23,8 +23,6 @@ stages:
           npm install -g pnpm
           rm .npmrc
           pnpm config set node-linker hoisted
-          pnpm config set hoist false
-          pnpm config set recursive-install false
         displayName: "Setup pnpm" 
 
       # BUG : To analyze, not only api project dependencies installed in the root node_modules (see nuxt) no matter "recursive-install false"
@@ -46,6 +44,15 @@ stages:
       # CONTROL BUNDLE DEPS
       - script: ls -l $(Build.ArtifactStagingDirectory)/api/node_modules
         displayName: "CONTROL BUNDLE DEPS" # Should contain all deps for api
+
+      # PNPM Deploy
+      - script: pnpm --filter=api deploy $(Build.ArtifactStagingDirectory)/api-bundle
+        displayName: "Pnpm deploy"
+
+      # CONTROL PNPM Deploy
+      - script: ls -l $(Build.ArtifactStagingDirectory)/api-bundle/node_modules
+        displayName: "CONTROL PNPM Deploy DEPS" # Should contain all deps for api
+      
 
       - task: PublishBuildArtifacts@1
         displayName: "Publish artifact"
