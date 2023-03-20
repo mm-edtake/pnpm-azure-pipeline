@@ -1,6 +1,7 @@
 {
     "name": "mongoose-helper",
     "version": "1.0.0",
+    "private": true,
     "dependencies": {
         "mongoose": "^6.7.5"
     }

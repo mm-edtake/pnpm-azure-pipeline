@@ -13,7 +13,7 @@ variables:
 stages:
 - stage: Build
   jobs:
-  - job: API
+  - job: PNPM
     steps:
       - task: NodeTool@0 
         inputs:
@@ -38,7 +38,7 @@ stages:
         displayName: "CONTROL ROOT node_modules" # Should be empty and NOT contain web deps
           
       # API ARTIFACT | copy complete folder recursively (pnpm deploy doesn't work to provide all node_modules dependencies)
-      - script: cp -rL $(function-folder) $(Build.ArtifactStagingDirectory)/api
+      - script: cp -rL $(function-folder) $(Build.ArtifactStagingDirectory)/api-cp
         displayName: "Bundle"
 
       # CONTROL BUNDLE DEPS
@@ -62,30 +62,23 @@ stages:
           publishLocation: 'Container'
           StoreAsTar: false
 
-  - job: APP
+  - job: YARN
     steps:
       - task: NodeTool@0 
         inputs:
           versionSpec: '14.x'
         
-      # INSTALL PNPM | peers needed for nuxt submodules
-      - script: |
-          npm install -g pnpm
-          rm .npmrc
-          pnpm config set node-linker hoisted
-          pnpm config set recursive-install false
-          pnpm config set auto-install-peers true
-        displayName: "Setup pnpm"
-
-      # BUILD FRONTEND
-      - script: pnpm --filter web install
+      - script: yarn install
         displayName: "Install dependencies"
+      
 
-      # everything else is build app and works fine
-      #
-      #
-      #
-      #
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish artifact"
+        inputs:
+          PathtoPublish: $(Build.ArtifactStagingDirectory)
+          ArtifactName: 'api'
+          publishLocation: 'Container'
+          StoreAsTar: false
 
 
 - stage: Test
