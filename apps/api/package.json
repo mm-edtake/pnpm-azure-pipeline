@@ -10,9 +10,6 @@
       "algoliasearch": "^4.14.2",
       "lodash": "4.17.21",
       "mongoose-helper": "workspace:*"
-    },
-    "workspaces": {
-      "nohoist": ["**"]
     }
   }
   
