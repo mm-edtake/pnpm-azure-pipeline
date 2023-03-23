@@ -29,8 +29,7 @@ stages:
       - script: pnpm --version
         displayName: "PNPM version" 
 
-      # BUG : To analyze, not only api project dependencies installed in the root node_modules (see nuxt) no matter "recursive-install false"
-      - script: pnpm --filter api install
+      - script: pnpm install
         displayName: "Install dependencies"   
 
       # CONTROL API DEPS
